@@ -1,87 +1,137 @@
-[Invite to server](https://discord.com/oauth2/authorize?client_id=792527907616194602&scope=bot&permissions=2147518464)
+# ACHILLES ESPORTS Tournament Bot
 
-**Commands for admins:**
+A professional Discord tournament bot for ACHILLES ESPORTS with slot list management, bracket generation, and live tournament tracking.
 
-`/add-organizer`
+## Features
 
-Add a role as an organizer.
+- ✅ Tournament creation system (Single/Double Elimination, Swiss, Round Robin)
+- ✅ Automatic slot list system like Quotient Bot
+- ✅ Team registration system
+- ✅ Player check-in system
+- ✅ Automatic bracket generation
+- ✅ Match reporting
+- ✅ Live standings and pairings
+- ✅ Reservation system
+- ✅ Waiting list support
+- ✅ Firebase realtime database integration
 
-`/remove-organizer`
+## Commands
 
-Remove a role as an organizer.
+### Admin Commands
+- `/set-organizer` - Set a role as tournament organizer
+- `/remove-organizer` - Remove organizer role
 
-**Commands for organizers:**
+### Organizer Commands
+- `/create-slotlist` - Create a slot list tournament (requires teams-per-group)
+- `/create-bracket` - Create a bracket tournament (no teams-per-group required)
+- `/delete-tournament` - Delete an active tournament
+- `/reserve-slot` - Reserve a slot for a team
+- `/start-tournament` - Start tournament and generate bracket
+- `/next-round` - Advance to next round
 
-`/new-tournament`
+### Player Commands
+- `/join` - Join a tournament
+- `/leave` - Leave a tournament
+- `/checkin` - Check in for tournament
+- `/report-result` - Report match result
+- `/standings` - View tournament standings
+- `/pairings` - View current round pairings
+- `/bracket` - View tournament bracket
+- `/live-url` - Get live viewer URL
 
-Create a new tournament.
+## Setup
 
-`/start-tournament`
+### Prerequisites
+- Node.js 18 or higher
+- Discord Bot Token
+- Firebase Project
 
-Start a tournament.
+### Installation
 
-`/end-tournament`
+1. Clone the repository:
+```bash
+git clone https://github.com/achilles-esports/tournament-bot.git
+cd tournament-bot
+```
 
-End a tournament.
+2. Install dependencies:
+```bash
+npm install
+```
 
-`/get-json`
+3. Copy `.env.example` to `.env` and fill in your credentials:
+```bash
+copy .env.example .env
+```
 
-Get a JSON file of the tournament data.
+4. Edit `.env` with your Discord token and Firebase credentials
 
-`/next-round`
+5. Start the bot:
+```bash
+npm start
+```
 
-Start the next round of a Swiss or round-robin tournament.
+### Discord Setup
 
-`/change-setting`
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Create a new application and bot
+3. Copy the token to your `.env` file
+4. Add the bot to your server with `applications.commands` and `bot` scopes
+5. Required permissions: Manage Messages, Embed Links, Read Message History, View Channels
 
-Change a tournament setting.
+### Firebase Setup
 
-`/set-seed`
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project
+3. Enable Realtime Database
+4. Generate a service account key
+5. Copy credentials to `.env`
 
-Add a seed value to a player for sorting.
+## Project Structure
 
-`/list-players`
+```
+src/
+├── commands/
+│   ├── admin/           # Admin commands
+│   ├── tournament/      # Player tournament commands
+│   └── organizer/       # Organizer commands
+├── database/            # Firebase database layer
+├── embeds/              # Discord embed templates
+├── events/              # Discord event handlers
+├── services/            # Business logic
+├── utils/               # Utility functions
+└── index.js             # Bot entry point
+```
 
-Get a list of all active players.
+## Deployment
 
-`/active-matches`
+### VPS (Linux)
 
-Get a list of all active matches.
+1. Set up Node.js 18+
+2. Clone and install
+3. Use PM2 for process management:
+```bash
+npm install -g pm2
+pm2 start src/index.js --name tournament-bot
+pm2 save
+pm2 startup
+```
 
-`/standings`
+### Docker
 
-Get a table of standings.
+```bash
+docker build -t achilles-tournament-bot .
+docker run -d --restart unless-stopped --name tournament-bot achilles-tournament-bot
+```
 
-`/edit-result`
+## Tournament Viewer Integration
 
-Enter the result of a match. Will overwrite any previous result.
+The bot integrates with the Bracketeer viewer for live standings and pairings:
 
-`/reset-match`
+1. Deploy `viewer.html` to your web server
+2. Configure Firebase database rules
+3. Access via live-url command
 
-Reset a match to have no result.
+## License
 
-**Commands for players:**
-
-`/join`
-
-Join a tournament (organizer can specify a user).
-
-`/result`
-
-Enter a result for a match.
-
-`/quit`
-
-Quit the current tournament (organizer can specify a user).
-
-`/pairing`
-
-Get the active pairing of a player (organizer can specify a user).
-
-`/rank`
-
-Get the current rank of a player.
-
-`/live-url`
-
-Get a link to view live pairings and standings online.;
+MIT License - ACHILLES ESPORTS

@@ -1,0 +1,6 @@
+.env
+.env.*
+.firebase-admin-sdk.json
+.private/
+node_modules/
+*.log
