@@ -54,20 +54,25 @@ class TournamentBot {
     }
 
     getFirebaseServiceAccount() {
-        // Prefer individual env vars — works on Railway without a file
+        // Option 1: entire JSON pasted as one env var (easiest for Railway)
+        if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+            return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+        }
+
+        // Option 2: individual env vars
         const { firebaseConfig } = this.client.config;
         if (firebaseConfig.projectId && firebaseConfig.privateKey && firebaseConfig.clientEmail) {
             return firebaseConfig;
         }
 
-        // Fall back to service account JSON file if path is set and valid
+        // Option 3: local JSON file (local dev only)
         const filePath = this.client.config.firebaseServiceAccountPath;
         if (filePath && !filePath.includes('BEGIN PRIVATE KEY')) {
             const serviceAccountPath = resolve(process.cwd(), filePath);
             return JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
         }
 
-        throw new Error('Missing Firebase credentials. Set FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, and FIREBASE_CLIENT_EMAIL environment variables.');
+        throw new Error('Missing Firebase credentials. Set FIREBASE_SERVICE_ACCOUNT_JSON in Railway with the contents of your firebase-admin-sdk.json file.');
     }
 
     async loadCommands() {
