@@ -54,17 +54,20 @@ class TournamentBot {
     }
 
     getFirebaseServiceAccount() {
-        if (this.client.config.firebaseServiceAccountPath) {
-            const serviceAccountPath = resolve(process.cwd(), this.client.config.firebaseServiceAccountPath);
+        // Prefer individual env vars — works on Railway without a file
+        const { firebaseConfig } = this.client.config;
+        if (firebaseConfig.projectId && firebaseConfig.privateKey && firebaseConfig.clientEmail) {
+            return firebaseConfig;
+        }
+
+        // Fall back to service account JSON file if path is set and valid
+        const filePath = this.client.config.firebaseServiceAccountPath;
+        if (filePath && !filePath.includes('BEGIN PRIVATE KEY')) {
+            const serviceAccountPath = resolve(process.cwd(), filePath);
             return JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
         }
 
-        const { firebaseConfig } = this.client.config;
-        if (!firebaseConfig.projectId || !firebaseConfig.privateKey || !firebaseConfig.clientEmail) {
-            throw new Error('Missing Firebase credentials. Set FIREBASE_SERVICE_ACCOUNT_PATH or provide Firebase credential environment variables.');
-        }
-
-        return firebaseConfig;
+        throw new Error('Missing Firebase credentials. Set FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, and FIREBASE_CLIENT_EMAIL environment variables.');
     }
 
     async loadCommands() {
